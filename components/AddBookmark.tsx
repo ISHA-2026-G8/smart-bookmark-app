@@ -103,17 +103,16 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
 
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
 export default function AddBookmark() {
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-
-  // ✅ Create client inside component using createBrowserClient
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -157,7 +156,7 @@ export default function AddBookmark() {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Add New Bookmark</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-900">Add New Bookmark</h2>
 
       <div className="mb-4">
         <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
@@ -168,7 +167,7 @@ export default function AddBookmark() {
           id="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400"
           placeholder="My Awesome Website"
           required
         />
@@ -183,7 +182,7 @@ export default function AddBookmark() {
           id="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400"
           placeholder="https://example.com"
           required
         />
@@ -196,8 +195,6 @@ export default function AddBookmark() {
       >
         {loading ? 'Adding...' : 'Add Bookmark'}
       </button>
-
-      
     </form>
-  ) 
+  )
 }
