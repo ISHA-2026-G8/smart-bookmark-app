@@ -3,27 +3,40 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --bg: #eef0f7;
+  --surface: #ffffff;
+  --surface-soft: #f8f8fc;
+  --text: #1a1a2e;
+  --text-muted: #7f83a6;
+  --input-border: #e1e3ef;
+  --primary: #4f7ef8;
+  --primary-strong: #3a6ef0;
+  --danger: #ef4444;
+  --danger-strong: #dc2626;
+  --toggle-bg: #d1d5db;
+  --overlay: rgba(12, 16, 30, 0.48);
+  --shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+html[data-theme='dark'] {
+  --bg: #121826;
+  --surface: #1b2438;
+  --surface-soft: #232f4a;
+  --text: #e7ecff;
+  --text-muted: #b6c1e2;
+  --input-border: #33415f;
+  --primary: #6f95ff;
+  --primary-strong: #86a6ff;
+  --danger: #ff6b6b;
+  --danger-strong: #ff8787;
+  --toggle-bg: #4b5563;
+  --overlay: rgba(5, 8, 17, 0.72);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: var(--text);
+  background: var(--bg);
 }
 
 @layer utilities {

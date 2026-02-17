@@ -1,219 +1,163 @@
-// import { redirect } from "next/navigation"
-// import { createClient } from "@/lib/supabaseServer"
-// import AuthButton from "@/components/AuthButton"
+"use client";
 
-// export default async function Home() {
-//   const supabase = createClient()
+import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import AuthButton from "@/components/AuthButton";
+import ThemeToggle from "@/components/ThemeToggle";
 
-//   const {
-//     data: { session },
-//   } = await supabase.auth.getSession()
+export default function Home() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-//   if (session) {
-//     redirect("/dashboard")
-//   }
-
-//   return (
-    
-    
-//     <main className="flex min-h-screen flex-col items-center justify-center p-24">
-//       <div className="flex flex-col gap-8 text-center">
-//         <h1 className="text-4xl font-bold">
-//           Welcome to Smart Bookmark App
-//         </h1>
-//         <p className="text-gray-600">
-//           Manage your bookmarks efficiently with real-time sync
-//         </p>
-//         <AuthButton />
-//       </div>
-//     </main>
-    
-//   )
-// }
-
-
-
-// import { redirect } from "next/navigation"
-// import { createClient } from "@/lib/supabaseServer"
-// import AuthButton from "@/components/AuthButton"
-
-// export default async function Home() {
-//   const supabase = createClient()
-
-//   const {
-//     data: { session },
-//   } = await supabase.auth.getSession()
-
-//   if (session) {
-//     redirect("/dashboard")
-//   }
-
-//   return (
-//     <>
-//       <style>{`
-//         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap');
-//         * { box-sizing: border-box; margin: 0; padding: 0; }
-//         body { background: #eef0f7; font-family: 'DM Sans', sans-serif; }
-//       `}</style>
-//       <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-[#eef0f7]">
-//         <div className="flex flex-col gap-8 text-center bg-white p-10 rounded-2xl shadow-lg max-w-md">
-//           <h1 className="text-3xl font-extrabold text-gray-800">
-//             Welcome to Smart Bookmark App
-//           </h1>
-//           <p className="text-gray-600 text-lg">
-//             Manage your bookmarks efficiently with real-time sync
-//           </p>
-//           <AuthButton />
-//         </div>
-//       </main>
-//     </>
-//   )
-// }
-
-
-// import { redirect } from "next/navigation"
-// import { createClient } from "@/lib/supabaseServer"
-// import AuthButton from "@/components/AuthButton"
-
-// export default async function Home() {
-//   const supabase = createClient()
-
-//   const {
-//     data: { session },
-//   } = await supabase.auth.getSession()
-
-//   if (session) {
-//     redirect("/dashboard")
-//   }
-
-//   return (
-//     <>
-//       <style>{`
-//         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap');
-//         * { box-sizing: border-box; margin: 0; padding: 0; }
-//         body { background: linear-gradient(135deg, #e0f7fa, #e3f2fd); font-family: 'DM Sans', sans-serif; }
-//       `}</style>
-//       <main className="flex min-h-screen flex-col items-center justify-center p-6">
-//         <div className="flex flex-col gap-6 text-center bg-white p-10 rounded-3xl shadow-2xl max-w-lg">
-//           {/* Title */}
-//           <h1 className="text-3xl font-extrabold text-gray-800">
-//             Welcome to Smart Bookmark App
-//           </h1>
-
-//           {/* Subtitle */}
-//           <p className="text-gray-600 text-lg">
-//             Manage your bookmarks efficiently with real-time sync
-//           </p>
-
-//           {/* Sign In Button */}
-//           <button
-//             className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-blue-500 text-white font-semibold text-lg py-3 px-6 rounded-full shadow-md hover:shadow-lg transition-all duration-300"
-//           >
-//             <img
-//               src="/google-icon.png"
-//               alt="Google Icon"
-//               className="w-5 h-5"
-//             />
-//             Sign in with Google
-//           </button>
-//         </div>
-//       </main>
-//     </>
-//   )
-// }
-
-
-
-
-
-
-
-
-
-import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabaseServer"
-import AuthButton from "@/components/AuthButton"
-
-export default async function Home() {
-  const supabase = createClient()
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-
-  if (session) {
-    redirect("/dashboard")
-  }
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (code) {
+      router.replace(`/auth/callback?code=${encodeURIComponent(code)}`);
+    }
+  }, [router, searchParams]);
 
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #eef0f7 !important; font-family: 'DM Sans', sans-serif; }
-      `}</style>
-      <main style={{
-        minHeight: '100vh',
-        background: '#eef0f7',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '24px',
-        fontFamily: "'DM Sans', sans-serif",
-      }}>
-        <div style={{
-          background: 'white',
-          borderRadius: '24px',
-          padding: '52px 48px',
-          boxShadow: '0 4px 32px rgba(0,0,0,0.09)',
-          maxWidth: '460px',
-          width: '100%',
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '20px',
-          alignItems: 'center',
-        }}>
-          {/* Icon */}
-          <div style={{
-            width: '64px',
-            height: '64px',
-            background: '#eef0f7',
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '30px',
-            marginBottom: '4px',
-          }}>
-            🔖
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "var(--bg)",
+        color: "var(--text)",
+        padding: "24px",
+      }}
+    >
+      <div style={{ maxWidth: "1120px", margin: "0 auto" }}>
+        <header
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "28px",
+            gap: "16px",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M7 4.5C7 3.67 7.67 3 8.5 3h7A2.5 2.5 0 0 1 18 5.5V20l-6-3-6 3V4.5z"
+                stroke="url(#bookmarkGrad)"
+                strokeWidth="1.8"
+                fill="url(#bookmarkFill)"
+                strokeLinejoin="round"
+              />
+              <defs>
+                <linearGradient id="bookmarkGrad" x1="7" y1="3" x2="18" y2="20" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#8ac6ff" />
+                  <stop offset="1" stopColor="#4f7ef8" />
+                </linearGradient>
+                <linearGradient id="bookmarkFill" x1="7" y1="3" x2="18" y2="20" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="rgba(138,198,255,0.22)" />
+                  <stop offset="1" stopColor="rgba(79,126,248,0.18)" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <h1
+              style={{
+                fontSize: "32px",
+                fontWeight: 800,
+                letterSpacing: "-0.5px",
+                color: "var(--text)",
+              }}
+            >
+              Smart{" "}
+              <span
+                style={{
+                  background: "linear-gradient(90deg, #95ccff 0%, #4f7ef8 65%, #3e6de8 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                Bookmarks
+              </span>
+            </h1>
           </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+            <ThemeToggle />
+            <AuthButton />
+          </div>
+        </header>
 
-          {/* Title */}
-          <h1 style={{
-            fontSize: '28px',
-            fontWeight: '800',
-            color: '#1a1a2e',
-            letterSpacing: '-0.5px',
-            lineHeight: '1.2',
-          }}>
-            Welcome to Smart Bookmark App
-          </h1>
-
-          {/* Subtitle */}
-          <p style={{
-            color: '#8888aa',
-            fontSize: '15px',
-            lineHeight: '1.6',
-            maxWidth: '320px',
-          }}>
-            Save, organize and access your favorite links — all in one place with real-time sync.
+        <section
+          style={{
+            background: "var(--surface)",
+            borderRadius: "24px",
+            padding: "38px 28px",
+            minHeight: "auto",
+            boxShadow: "var(--shadow)",
+            border: "1px solid var(--input-border)",
+            textAlign: "center",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "clamp(44px, 6vw, 72px)",
+              lineHeight: 1.05,
+              fontWeight: 800,
+              marginBottom: "22px",
+              letterSpacing: "-0.8px",
+            }}
+          >
+            <span
+              style={{
+                background: "linear-gradient(90deg, #9ad2ff 0%, #61bbff 45%, #3d8dff 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              Capture what counts
+            </span>
+            <br />
+            <span style={{ color: "var(--text)" }}>most</span>
+          </h2>
+          <p
+            style={{
+              fontSize: "clamp(18px, 2vw, 28px)",
+              color: "var(--text-muted)",
+              marginBottom: "30px",
+              maxWidth: "900px",
+              marginInline: "auto",
+            }}
+          >
+            A clean bookmark manager that syncs instantly across devices and tabs.
           </p>
 
-          {/* Sign In Button */}
-          <AuthButton />
-        </div>
-      </main>
-    </>
-  )
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+              gap: "14px",
+            }}
+          >
+            <div style={{ background: "var(--surface-soft)", borderRadius: "16px", padding: "18px", border: "1px solid var(--input-border)", boxShadow: "0 10px 22px rgba(0,0,0,0.16)" }}>
+              <h3 style={{ fontSize: "clamp(24px, 2.4vw, 30px)", marginBottom: "6px" }}>⚡</h3>
+              <h4 style={{ fontSize: "clamp(22px, 2.4vw, 28px)", marginBottom: "6px", color: "var(--text)" }}>Real-time</h4>
+              <p style={{ color: "var(--text-muted)", fontSize: "clamp(16px, 1.8vw, 20px)", lineHeight: 1.3 }}>
+                New and deleted bookmarks appear instantly.
+              </p>
+            </div>
+            <div style={{ background: "var(--surface-soft)", borderRadius: "16px", padding: "18px", border: "1px solid var(--input-border)", boxShadow: "0 10px 22px rgba(0,0,0,0.16)" }}>
+              <h3 style={{ fontSize: "clamp(24px, 2.4vw, 30px)", marginBottom: "6px" }}>🛡️</h3>
+              <h4 style={{ fontSize: "clamp(22px, 2.4vw, 28px)", marginBottom: "6px", color: "var(--text)" }}>Private</h4>
+              <p style={{ color: "var(--text-muted)", fontSize: "clamp(16px, 1.8vw, 20px)", lineHeight: 1.3 }}>
+                Your bookmarks are visible only to your account.
+              </p>
+            </div>
+            <div style={{ background: "var(--surface-soft)", borderRadius: "16px", padding: "18px", border: "1px solid var(--input-border)", boxShadow: "0 10px 22px rgba(0,0,0,0.16)" }}>
+              <h3 style={{ fontSize: "clamp(24px, 2.4vw, 30px)", marginBottom: "6px" }}>✅</h3>
+              <h4 style={{ fontSize: "clamp(22px, 2.4vw, 28px)", marginBottom: "6px", color: "var(--text)" }}>Simple</h4>
+              <p style={{ color: "var(--text-muted)", fontSize: "clamp(16px, 1.8vw, 20px)", lineHeight: 1.3 }}>
+                Add, open, and remove links with no clutter.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
 }

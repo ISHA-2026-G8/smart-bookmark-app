@@ -1,112 +1,109 @@
-// import { redirect } from 'next/navigation'
-// import { createClient } from '@/lib/supabaseServer'
-// import BookmarkList from '@/components/BookmarkList'
-// import AddBookmark from '@/components/AddBookmark'
-// import LogoutButton from '@/components/LogoutButton'
-
-// export default async function Dashboard() {
-//   const supabase = createClient()
-  
-//   const {
-//     data: { session },
-//   } = await supabase.auth.getSession()
-
-//   if (!session) {
-//     redirect('/')
-//   }
-
-//   const { data: bookmark } = await supabase
-//     .from('bookmark')
-//     .select('*')
-//     .order('created_at', { ascending: false })
-
-//   return (
-//     <main className="min-h-screen p-8">
-//       <div className="max-w-4xl mx-auto">
-//         <div className="flex justify-between items-center mb-8">
-//           <div>
-//             <h1 className="text-3xl font-bold">My Bookmark</h1>
-//             <p className="text-gray-600">Welcome, {session.user.email}</p>
-//           </div>
-//           <LogoutButton />
-//         </div>
-
-//         <AddBookmark />
-        
-//         <div className="mt-8">
-//           <BookmarkList initialBookmarks={bookmark || []} />
-//         </div>
-//       </div>
-//     </main>
-//   )
-// }
-
-
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabaseServer'
 import BookmarkList from '@/components/BookmarkList'
 import AddBookmark from '@/components/AddBookmark'
 import LogoutButton from '@/components/LogoutButton'
+import ThemeToggle from '@/components/ThemeToggle'
+import CenterToast from '@/components/CenterToast'
+
+type UserLike = {
+  email?: string
+  user_metadata?: {
+    full_name?: string
+    name?: string
+    preferred_username?: string
+  }
+}
+
+function getDisplayName(user: UserLike) {
+  const metadataName =
+    user.user_metadata?.full_name ||
+    user.user_metadata?.name ||
+    user.user_metadata?.preferred_username
+
+  if (metadataName) return metadataName
+
+  const email = user.email || ''
+  const localPart = email.split('@')[0]
+  return localPart || 'there'
+}
 
 export default async function Dashboard() {
   const supabase = createClient()
 
-  const { data: { session } } = await supabase.auth.getSession()
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
   if (!session) redirect('/')
 
   const { data: bookmarks } = await supabase
     .from('bookmark')
     .select('*')
+    .eq('user_id', session.user.id)
     .order('created_at', { ascending: false })
 
-  return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #eef0f7 !important; }
-      `}</style>
-      <main style={{
-        minHeight: '100vh',
-        background: '#eef0f7',
-        padding: '32px 24px',
-        fontFamily: "'DM Sans', sans-serif",
-      }}>
-        <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+  const displayName = getDisplayName(session.user)
 
-          {/* Header */}
-          <div style={{
-            background: 'white',
+  return (
+    <main
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg)',
+        color: 'var(--text)',
+        padding: '32px 24px',
+      }}
+    >
+      <div style={{ maxWidth: '1040px', margin: '0 auto' }}>
+        <p
+          style={{
+            color: 'var(--text)',
+            fontSize: '22px',
+            fontWeight: 700,
+            marginBottom: '14px',
+          }}
+        >
+          👋 Welcome, {displayName}
+        </p>
+
+        <header
+          style={{
+            background: 'var(--surface)',
             borderRadius: '20px',
-            padding: '20px 32px',
-            boxShadow: '0 2px 16px rgba(0,0,0,0.07)',
+            padding: '20px 24px',
+            boxShadow: 'var(--shadow)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
+            gap: '16px',
             marginBottom: '24px',
-          }}>
-            <div>
-              <h1 style={{
-                fontSize: '28px',
-                fontWeight: '800',
-                color: '#1a1a2e',
-                letterSpacing: '-0.5px',
-              }}>Smart Bookmarks</h1>
-              <p style={{ color: '#8888aa', fontSize: '13px', marginTop: '2px' }}>
-                {session.user.email}
-              </p>
-            </div>
-            <LogoutButton />
+          }}
+        >
+          <div>
+            <h1
+              style={{
+                fontSize: '36px',
+                fontWeight: 800,
+                lineHeight: 1.1,
+              }}
+            >
+              Smart Bookmarks
+            </h1>
+            <p style={{ color: 'var(--text-muted)', marginTop: '2px', fontSize: '13px' }}>
+              {session.user.email}
+            </p>
           </div>
 
-          {/* Add Bookmark Form */}
-          <AddBookmark />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <ThemeToggle />
+            <LogoutButton />
+          </div>
+        </header>
 
-          {/* Bookmark Grid */}
-          <BookmarkList initialBookmarks={bookmarks || []} />
-
-        </div>
-      </main>
-    </>
+        <AddBookmark />
+        <BookmarkList initialBookmarks={bookmarks || []} userId={session.user.id} />
+        <CenterToast />
+      </div>
+    </main>
   )
 }

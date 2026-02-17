@@ -4,10 +4,13 @@ import { supabase } from "@/lib/supabaseClient"
 
 export default function LoginButton() {
   const handleLogin = async () => {
+    const redirectOrigin =
+      process.env.NEXT_PUBLIC_APP_URL || window.location.origin
+
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "http://localhost:3000/auth/callback"
+        redirectTo: `${redirectOrigin}/auth/callback?next=/dashboard`
       }
     })
   }
