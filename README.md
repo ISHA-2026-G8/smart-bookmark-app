@@ -8,8 +8,8 @@ A full-stack, real-time bookmark manager built with **Next.js 14 + Supabase** wh
 
 | | URL |
 |---|---|
-| 🌐 **Live App** | _Add your deployed URL_ |
-| 💻 **GitHub Repo** | _Add your repository URL_ |
+| 🌐 **Live App** https://smart-bookmark-app-theta-ten.vercel.app/
+| 💻 **GitHub Repo** https://github.com/ISHA-2026-G8/smart-bookmark-app
 
 ---
 
