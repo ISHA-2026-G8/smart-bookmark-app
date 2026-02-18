@@ -95,9 +95,9 @@ export default function BookmarkList({
       )
       .on(
         'postgres_changes',
-        { event: 'DELETE', schema: 'public', table: 'bookmark', filter: `user_id=eq.${userId}` },
+        { event: 'DELETE', schema: 'public', table: 'bookmark' },
         (payload) => {
-          const deleted = payload.old as Bookmark
+          const deleted = payload.old as Pick<Bookmark, 'id'>
           setBookmarks((cur) => cur.filter((item) => item.id !== deleted.id))
         }
       )
