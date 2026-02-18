@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useMemo, useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
@@ -23,6 +23,26 @@ const supabase = createBrowserClient(
 function normalizeUrl(url: string) {
   if (/^https?:\/\//i.test(url)) return url
   return `https://${url}`
+}
+
+function getDomain(url: string) {
+  try {
+    return new URL(normalizeUrl(url)).hostname
+  } catch {
+    return ''
+  }
+}
+
+function formatCreatedTime(createdAt: string) {
+  const date = new Date(createdAt)
+  if (Number.isNaN(date.getTime())) return 'Unknown time'
+  return date.toLocaleString([], {
+    hour: 'numeric',
+    minute: '2-digit',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  })
 }
 
 export default function BookmarkList({
@@ -108,7 +128,7 @@ export default function BookmarkList({
   const bookmarkTitlesText =
     bookmarks.length > 0
       ? bookmarks.map((bookmark) => bookmark.title).join(', ')
-      : 'There are no bookmarks yet—go ahead and add yours.'
+      : 'There are no bookmarks yet - go ahead and add yours.'
 
   const handleDelete = async () => {
     if (!pendingDelete) return
@@ -127,7 +147,10 @@ export default function BookmarkList({
     setBookmarks((cur) => cur.filter((item) => item.id !== id))
     window.dispatchEvent(
       new CustomEvent('app-toast', {
-        detail: { message: `Bookmark "${pendingDelete.title}" deleted successfully.` },
+        detail: {
+          message: `Bookmark "${pendingDelete.title}" deleted successfully.`,
+          tone: 'danger',
+        },
       })
     )
     setPendingDelete(null)
@@ -154,6 +177,7 @@ export default function BookmarkList({
           Bookmark Count: <span style={{ color: 'var(--primary)', fontSize: '18px' }}>{bookmarkCount}</span>
         </span>
         <span
+          className="bookmark-summary-text"
           style={{
             color: 'var(--text-muted)',
             fontSize: '14px',
@@ -169,7 +193,7 @@ export default function BookmarkList({
         <div
           style={{
             textAlign: 'center',
-            padding: '70px 32px',
+            padding: 'clamp(32px, 7vw, 70px) clamp(16px, 4vw, 32px)',
             background: 'var(--surface)',
             borderRadius: '20px',
             boxShadow: 'var(--shadow)',
@@ -188,9 +212,17 @@ export default function BookmarkList({
               zIndex: 1,
             }}
           >
-            ✦ Save links faster ✦
+            * Save links faster *
           </div>
-          <h3 style={{ fontSize: '34px', marginBottom: '10px', fontWeight: 800, position: 'relative', zIndex: 1 }}>
+          <h3
+            style={{
+              fontSize: 'clamp(24px, 5vw, 34px)',
+              marginBottom: '10px',
+              fontWeight: 800,
+              position: 'relative',
+              zIndex: 1,
+            }}
+          >
             Your bookmark collection is empty
           </h3>
           <p style={{ color: 'var(--text-muted)', fontSize: '17px', position: 'relative', zIndex: 1 }}>
@@ -198,72 +230,117 @@ export default function BookmarkList({
           </p>
         </div>
       ) : (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '16px',
-        }}
-      >
+      <div className="bookmark-grid">
         {bookmarks.map((bookmark) => {
           const href = normalizeUrl(bookmark.url)
           const displayUrl = bookmark.url.replace(/^https?:\/\//i, '')
+          const domain = getDomain(bookmark.url)
+          const faviconUrl = domain
+            ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
+            : ''
+          const createdLabel = formatCreatedTime(bookmark.created_at)
 
           return (
             <article
+              className="bookmark-card"
               key={bookmark.id}
               style={{
                 background: 'var(--surface)',
                 borderRadius: '16px',
-                padding: '20px 22px',
+                padding: 'clamp(16px, 3vw, 24px)',
                 boxShadow: 'var(--shadow)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                gap: '12px',
               }}
             >
-              <div style={{ flex: 1, minWidth: 0 }}>
+              <div className="bookmark-card-main">
+                <div
+                  style={{
+                    width: '34px',
+                    height: '34px',
+                    borderRadius: '8px',
+                    background: 'var(--surface-soft)',
+                    border: '1px solid var(--input-border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  {faviconUrl ? (
+                    <img
+                      src={faviconUrl}
+                      alt={`${domain} icon`}
+                      width={18}
+                      height={18}
+                      style={{ borderRadius: '4px' }}
+                    />
+                  ) : (
+                    <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Link</span>
+                  )}
+                </div>
+
+                <div style={{ minWidth: 0, flex: 1 }}>
                 <a
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
                     fontWeight: 700,
-                    fontSize: '17px',
+                    fontSize: '18px',
                     color: 'var(--text)',
-                    marginBottom: '8px',
+                    marginBottom: '10px',
                     display: 'block',
                     textDecoration: 'none',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
+                    whiteSpace: 'normal',
+                    wordBreak: 'break-word',
                   }}
                   title={bookmark.title}
                 >
                   {bookmark.title}
                 </a>
 
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    color: 'var(--text-muted)',
-                    fontSize: '13px',
-                    display: 'block',
-                    textDecoration: 'none',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                  title={href}
-                >
-                  {displayUrl}
-                </a>
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: '8px',
+                      alignItems: 'flex-start',
+                      minWidth: 0,
+                      flexWrap: 'wrap',
+                    }}
+                  >
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: 'var(--text-muted)',
+                        fontSize: '14px',
+                        display: 'block',
+                        textDecoration: 'none',
+                        whiteSpace: 'normal',
+                        wordBreak: 'break-word',
+                        maxWidth: '100%',
+                      }}
+                      title={href}
+                    >
+                      {displayUrl}
+                    </a>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>|</span>
+                    <span
+                      style={{
+                        color: 'var(--text-muted)',
+                        fontSize: '12px',
+                        whiteSpace: 'nowrap',
+                      }}
+                      title={createdLabel}
+                    >
+                      {createdLabel}
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <button
+                className="bookmark-delete-btn"
                 onClick={() => setPendingDelete(bookmark)}
                 style={{
                   background: '#fde8e8',
@@ -314,7 +391,7 @@ export default function BookmarkList({
             <p style={{ color: 'var(--text-muted)', marginBottom: '18px', lineHeight: 1.5 }}>
               Would you like to delete {bookmarkToDeleteTitle}?
             </p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+            <div className="confirm-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button
                 type="button"
                 onClick={() => setPendingDelete(null)}
@@ -353,4 +430,5 @@ export default function BookmarkList({
     </>
   )
 }
+
 

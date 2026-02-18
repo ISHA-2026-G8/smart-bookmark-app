@@ -20,7 +20,7 @@ export default function LoginButton() {
       onClick={handleLogin}
       className="px-6 py-3 bg-blue-600 text-white rounded-lg"
     >
-      Sign in with Google
+      Sign in
     </button>
   )
 }

@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation'
+﻿import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabaseServer'
 import BookmarkList from '@/components/BookmarkList'
 import AddBookmark from '@/components/AddBookmark'
@@ -51,50 +51,54 @@ export default async function Dashboard() {
         minHeight: '100vh',
         background: 'var(--bg)',
         color: 'var(--text)',
-        padding: '32px 24px',
+        padding: 'clamp(16px, 3vw, 32px) clamp(12px, 3vw, 24px)',
       }}
     >
       <div style={{ maxWidth: '1040px', margin: '0 auto' }}>
         <p
           style={{
             color: 'var(--text)',
-            fontSize: '22px',
+            fontSize: 'clamp(18px, 2.6vw, 22px)',
             fontWeight: 700,
             marginBottom: '14px',
           }}
         >
-          👋 Welcome, {displayName}
+          Welcome, {displayName}
         </p>
 
         <header
+          className="dashboard-header"
           style={{
             background: 'var(--surface)',
             borderRadius: '20px',
-            padding: '20px 24px',
+            padding: 'clamp(16px, 2.6vw, 20px) clamp(14px, 2.6vw, 24px)',
             boxShadow: 'var(--shadow)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: '16px',
             marginBottom: '24px',
           }}
         >
           <div>
             <h1
               style={{
-                fontSize: '36px',
+                fontSize: 'clamp(26px, 4.2vw, 36px)',
                 fontWeight: 800,
                 lineHeight: 1.1,
               }}
             >
               Smart Bookmarks
             </h1>
-            <p style={{ color: 'var(--text-muted)', marginTop: '2px', fontSize: '13px' }}>
+            <p
+              style={{
+                color: 'var(--text-muted)',
+                marginTop: '2px',
+                fontSize: '13px',
+                overflowWrap: 'anywhere',
+              }}
+            >
               {session.user.email}
             </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="dashboard-header-actions">
             <ThemeToggle />
             <LogoutButton />
           </div>

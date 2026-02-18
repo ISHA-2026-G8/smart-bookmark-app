@@ -4,10 +4,12 @@ import { useEffect, useRef, useState } from 'react'
 
 type ToastEventDetail = {
   message?: string
+  tone?: 'success' | 'danger'
 }
 
 export default function CenterToast() {
   const [message, setMessage] = useState('')
+  const [tone, setTone] = useState<'success' | 'danger'>('success')
   const [visible, setVisible] = useState(false)
   const timerRef = useRef<number | null>(null)
 
@@ -18,6 +20,7 @@ export default function CenterToast() {
       if (!nextMessage) return
 
       setMessage(nextMessage)
+      setTone(detail?.tone === 'danger' ? 'danger' : 'success')
       setVisible(true)
 
       if (timerRef.current) {
@@ -55,11 +58,14 @@ export default function CenterToast() {
     >
       <div
         style={{
-          background: 'var(--surface)',
-          color: 'var(--text)',
-          border: '1px solid var(--input-border)',
+          background: tone === 'success' ? '#e8f9ef' : '#fdecec',
+          color: tone === 'success' ? '#0f5132' : '#842029',
+          border: tone === 'success' ? '1px solid #9ad8b0' : '1px solid #f1aeb5',
           borderRadius: '14px',
-          boxShadow: 'var(--shadow)',
+          boxShadow:
+            tone === 'success'
+              ? '0 10px 24px rgba(32, 132, 80, 0.25)'
+              : '0 10px 24px rgba(180, 50, 65, 0.25)',
           padding: '14px 18px',
           maxWidth: '460px',
           width: 'calc(100% - 32px)',

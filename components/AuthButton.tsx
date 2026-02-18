@@ -21,6 +21,7 @@ export default function AuthButton() {
 
   return (
     <button
+      className="auth-button"
       onClick={handleLogin}
       style={{
         display: "flex",
@@ -35,11 +36,10 @@ export default function AuthButton() {
         borderRadius: "999px",
         border: "none",
         cursor: "pointer",
-        minWidth: "210px",
       }}
     >
       <span style={{ fontWeight: 800 }}>G</span>
-      Sign in with Google
+      Sign in
     </button>
   );
 }

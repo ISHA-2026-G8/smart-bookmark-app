@@ -10,13 +10,23 @@ const supabase = createBrowserClient(
 
 function normalizeUrl(url: string) {
   const trimmed = url.trim()
-  if (/^https?:\/\//i.test(trimmed)) return trimmed
-  return `https://${trimmed}`
+  if (!trimmed) return ''
+
+  const typoFixed = trimmed
+    .replace(/^htp:\/\//i, 'http://')
+    .replace(/^htps:\/\//i, 'https://')
+    .replace(/^httpss:\/\//i, 'https://')
+    .replace(/^ttps?:\/\//i, 'https://')
+
+  if (/^https?:\/\//i.test(typoFixed)) return typoFixed
+  if (/^www\./i.test(typoFixed)) return `https://${typoFixed}`
+
+  return `https://${typoFixed}`
 }
 
 export default function AddBookmark() {
   const [title, setTitle] = useState('')
-  const [url, setUrl] = useState('')
+  const [url, setUrl] = useState('https://')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,13 +52,25 @@ export default function AddBookmark() {
     const cleanTitle = title.trim()
     const normalizedUrl = normalizeUrl(url)
 
+    let parsedUrl: URL
+    try {
+      parsedUrl = new URL(normalizedUrl)
+      if (!['http:', 'https:'].includes(parsedUrl.protocol) || !parsedUrl.hostname) {
+        throw new Error('Invalid URL protocol or host')
+      }
+    } catch {
+      alert('Please enter a valid website URL. Example: https://example.com')
+      setLoading(false)
+      return
+    }
+
     const { data, error } = await supabase
       .from('bookmark')
       .insert([
         {
           user_id: user.id,
           title: cleanTitle,
-          url: normalizedUrl,
+          url: parsedUrl.toString(),
         },
       ])
       .select()
@@ -59,7 +81,10 @@ export default function AddBookmark() {
     } else {
       window.dispatchEvent(
         new CustomEvent('app-toast', {
-          detail: { message: `Bookmark "${cleanTitle}" added successfully.` },
+          detail: {
+            message: `Bookmark "${cleanTitle}" added successfully.`,
+            tone: 'success',
+          },
         })
       )
 
@@ -70,7 +95,7 @@ export default function AddBookmark() {
       )
 
       setTitle('')
-      setUrl('')
+      setUrl('https://')
     }
 
     setLoading(false)
@@ -81,20 +106,20 @@ export default function AddBookmark() {
       style={{
         background: 'var(--surface)',
         borderRadius: '20px',
-        padding: '28px 32px',
+        padding: 'clamp(16px, 2.8vw, 28px) clamp(14px, 2.8vw, 32px)',
         boxShadow: 'var(--shadow)',
         marginBottom: '24px',
       }}
     >
       <form onSubmit={handleSubmit}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="add-bookmark-row">
             <label
+              className="add-bookmark-label"
               style={{
                 fontWeight: 700,
                 fontSize: '15px',
                 color: 'var(--text)',
-                width: '48px',
                 flexShrink: 0,
               }}
             >
@@ -121,13 +146,13 @@ export default function AddBookmark() {
             />
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div className="add-bookmark-row">
             <label
+              className="add-bookmark-label"
               style={{
                 fontWeight: 700,
                 fontSize: '15px',
                 color: 'var(--text)',
-                width: '48px',
                 flexShrink: 0,
               }}
             >
@@ -149,13 +174,17 @@ export default function AddBookmark() {
                 background: 'var(--surface-soft)',
                 outline: 'none',
               }}
-              onFocus={(e) => (e.target.style.borderColor = 'var(--primary)')}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--primary)'
+                if (!url.trim()) setUrl('https://')
+              }}
               onBlur={(e) => (e.target.style.borderColor = 'var(--input-border)')}
             />
           </div>
 
           <div>
             <button
+              className="add-bookmark-submit"
               type="submit"
               disabled={loading}
               style={{
