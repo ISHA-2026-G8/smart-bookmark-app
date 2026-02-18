@@ -63,7 +63,7 @@ export default async function Dashboard() {
             marginBottom: '14px',
           }}
         >
-          Welcome, {displayName}
+          👋 Hi, Welcome, {displayName}
         </p>
 
         <header

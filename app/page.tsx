@@ -137,6 +137,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 boxShadow: '0 10px 22px rgba(0,0,0,0.16)',
               }}
             >
+              <div style={{ fontSize: '24px', marginBottom: '4px' }}>⚡</div>
               <h3 style={{ fontSize: 'clamp(24px, 2.4vw, 30px)', marginBottom: '6px' }}>Lightning Fast</h3>
               <h4
                 style={{
@@ -160,6 +161,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 boxShadow: '0 10px 22px rgba(0,0,0,0.16)',
               }}
             >
+              <div style={{ fontSize: '24px', marginBottom: '4px' }}>🛡️</div>
               <h3 style={{ fontSize: 'clamp(24px, 2.4vw, 30px)', marginBottom: '6px' }}>Secure</h3>
               <h4
                 style={{
@@ -183,6 +185,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 boxShadow: '0 10px 22px rgba(0,0,0,0.16)',
               }}
             >
+              <div style={{ fontSize: '24px', marginBottom: '4px' }}>✅</div>
               <h3 style={{ fontSize: 'clamp(24px, 2.4vw, 30px)', marginBottom: '6px' }}>No Clutter</h3>
               <h4
                 style={{
